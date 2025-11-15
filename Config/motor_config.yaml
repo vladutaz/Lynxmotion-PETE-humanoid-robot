@@ -1,0 +1,21 @@
+system:
+  baud_rate: 115200
+  device: COM3
+motor:
+  timeout: 1000
+
+right_arm:
+  motor_ids: 
+  home_positions: [0, -45, 90, 0, 45, 0]
+left_arm:
+  motor_ids: [7, 8, 9, 10, 11, 12]
+  home_positions: [0, 45, -90, 0, -45, 0]
+right_leg:
+  motor_ids: 
+  home_positions: [0, -30, 60, 0, 30, 0]
+left_leg:
+  motor_ids: [24, 25, 26, 27]
+  home_positions: [0, 30, -60, 0, -30, 0]
+torso:
+  motor_ids: 
+  home_positions: [0, 0]
