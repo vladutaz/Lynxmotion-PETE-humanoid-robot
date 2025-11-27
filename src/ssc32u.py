@@ -2,14 +2,24 @@ import serial
 import time
 import yaml
 
+from typing import Optional, List, Dict
+from dataclasses import dataclass
+from Config import *
+
 CONFIG_FILE = '../Config/motor_config.yaml'
+
+@dataclass
+class LimbConfig:
+    motor_ids: List[int]
+    home_positions: List[float]
+    joint_names: List[str]
 
 class SSC32U:
     """
     Controller class for SSC-32U servo controller
     """
     
-    def __init__(self, port, baudrate=115200, timeout=1):
+    def __init__(self,timeout=1):
         """
         Initialize connection to SSC-32U
         
@@ -18,14 +28,37 @@ class SSC32U:
             baudrate: Communication speed (default: 9600)
             timeout: Serial timeout in seconds
         """
+        self.libs = self._parse_limbs()
+
         try:
-            self.serial = serial.Serial(port, baudrate, timeout=timeout)
+
+            if self.port is None:
+                self.port = Config().get_system_conf("port")
+            if self.baudrate is None:
+                self.baudrate = Config().get_system_conf("baud_rate")
+
+            self.serial = serial.Serial(self.port, self.baudrate, timeout=timeout)
             time.sleep(2)
-            print(f"Connected to SSC-32U on {port}")
+            print(f"Connected to SSC-32U on {self.port}")
         except serial.SerialException as e:
             print(f"Error connecting: {e}")
             raise
+
+
+    def _parse_limbs(self) -> dict:
+        """Parse limb configurations into structured objects"""
+        limbs = {}
+        for name, data in self.Config()['robot_config']['servos'].items():
+            limbs[name] = LimbConfig(
+                motor_ids=data['motor_ids'],
+                home_positions=data['home_positions'],
+                limits_min=data['limits']['min'],
+                limits_max=data['limits']['max'],
+                joint_names=data['joint_names']
+            )
+        return limbs
     
+
     def send_command(self, command):
         """
         Send raw command to SSC-32U
@@ -73,7 +106,7 @@ class SSC32U:
             channel: Servo channel (0-31)
             time_ms: Movement time in milliseconds
         """
-        self.move_servo(channel, 1500, time_ms)
+        self.move_servo(channel, Config().get_system_conf("center_position"), time_ms)
     
     def center_all_servos(self, num_servos=6, time_ms=2000):
         """
@@ -92,5 +125,7 @@ class SSC32U:
         Close the serial connection
         """
         if self.serial.is_open:
+            self.port = None
+            self.baudrate = None
             self.serial.close()
             print("Connection closed")

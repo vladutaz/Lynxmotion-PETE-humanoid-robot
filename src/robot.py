@@ -19,7 +19,9 @@ if __name__ == "__main__":
         #ssc_out = SSC32U(PORT_OUT, baudrate=BAUDRATE)
         # Center all servos
         print("\nCentering all servos")
-        ssc.center_all_servos(num_servos=31)
+        for i in range(32):
+            ssc.move_servo(i, 1500, time_ms=1000)
+            time.sleep(0.5)
         
         print("All servos centered.")
         time.sleep(2)
