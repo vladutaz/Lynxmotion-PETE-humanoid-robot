@@ -4,9 +4,9 @@ import yaml
 
 from typing import Optional, List, Dict
 from dataclasses import dataclass
-from Config import *
+from Config import CONFIG_FILE, Config
 
-CONFIG_FILE = '../Config/motor_config.yaml'
+#CONFIG_FILE = '../Config/motor_config.yaml'
 
 @dataclass
 class LimbConfig:
@@ -29,6 +29,8 @@ class SSC32U:
             timeout: Serial timeout in seconds
         """
         self.libs = self._parse_limbs()
+        self.port = None
+        self.baudrate = None
 
         try:
 
@@ -48,12 +50,16 @@ class SSC32U:
     def _parse_limbs(self) -> dict:
         """Parse limb configurations into structured objects"""
         limbs = {}
-        for name, data in self.Config()['robot_config']['servos'].items():
+
+        cfg_instance = Config()
+        
+        robot_config = cfg_instance.get_robot_config()
+        servo_data = robot_config.get('servos', {})
+
+        for name, data in servo_data.items():
             limbs[name] = LimbConfig(
                 motor_ids=data['motor_ids'],
                 home_positions=data['home_positions'],
-                limits_min=data['limits']['min'],
-                limits_max=data['limits']['max'],
                 joint_names=data['joint_names']
             )
         return limbs

@@ -8,13 +8,12 @@ if __name__ == "__main__":
     # Change this to your COM port
     # Windows: 'COM2', 'COM3', etc.
     # If using Bluetooth, ensure the correct COM port is selected and select in and out
-    PORT = 'COM3'
     #PORT_IN = 'COM6'  # Bluetooth in
     #PORT_OUT = 'COM7' # Bluetooth out
-    BAUDRATE = 115200
+    ssc = None
     
     try:
-        ssc = SSC32U(PORT, baudrate=BAUDRATE)
+        ssc = SSC32U()
         #ssc_in = SSC32U(PORT_IN, baudrate=BAUDRATE)
         #ssc_out = SSC32U(PORT_OUT, baudrate=BAUDRATE)
         # Center all servos
@@ -40,4 +39,5 @@ if __name__ == "__main__":
         print(f"Error: {e}")
     
     finally:
-        ssc.close()
+        if ssc is not None:
+            ssc.close()

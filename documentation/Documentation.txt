@@ -14,3 +14,13 @@ d. Non-standard Baud rate (no LEDs)
 4. Press the button to cycle through baud rates outlined in step 1. 
 5. Once you have selected the Baud rate you want, do nothing; after 5 seconds the LEDs 
 will return to normal mode and the new baud rate will be written to EEPROM.
+
+For the code, its written in python and can only be used with an usb cable to the board.
+If you get the code to work with bluetooth(the 4-pin basic bluetooth module doesn't work but maybe the X-Bee module works), 
+you can easly change the communication port in the .yaml file.
+
+
+    Calibration:
+-for the calibration you can easly run the motor_calibration.py file and you can chose between manual or clasic(automatic) one
+
+

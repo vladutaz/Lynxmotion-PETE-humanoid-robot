@@ -1,12 +1,14 @@
 from enum import Enum
 from typing import Union, Dict
+from pathlib import Path
 import threading
+from sympy import content
 import yaml
+import os
 
 __all__ = ["Config"]
 
-
-CONFIG_FILE = '../Config/motor_config.yaml'
+CONFIG_FILE = os.path.join(os.path.dirname(__file__), '../Config/motor_config.yaml')
 
 
 class Config:
@@ -22,7 +24,18 @@ class Config:
 
     def _load(self, path):
         with open(path, 'r') as f:
-            self._data: dict = yaml.safe_load(f)
+            content = f.read()
+        
+        # Print the file with line numbers
+        #print("=" * 50)
+        #print("YAML FILE CONTENT:")
+        #print("=" * 50)
+        #for i, line in enumerate(content.split('\n'), 1):
+        #    print(f"{i:3d}: {repr(line)}")
+        #print("=" * 50)
+    
+        # Try to parse
+        self._data: dict = yaml.safe_load(content)
 
     ##############################################################
     # Getters
@@ -38,7 +51,9 @@ class Config:
         Returns:
             float: Home position for that motor
         """
-        for limb_name, limb_data in self._data.items():
+        servos = self._data.get('servos', {})
+        
+        for limb_name, limb_data in servos.items():
             if not isinstance(limb_data, dict):
                 continue
             
@@ -60,8 +75,9 @@ class Config:
             dict: {motor_id: home_position}
         """
         motor_map = {}
+        servos = self._data.get('servos', {})
         
-        for limb_name, limb_data in self._data.items():
+        for limb_name, limb_data in servos.items():
             # Skip non-limb entries
             if not isinstance(limb_data, dict):
                 continue
@@ -77,14 +93,16 @@ class Config:
     
     def get_limb_config(self, limb_name: str) -> dict:
         """Get configuration for a specific limb"""
-        if limb_name not in self._data:
+        servos = self._data.get('servos', {})
+        if limb_name not in servos:
             raise ValueError(f"Limb '{limb_name}' not found in configuration")
-        return self._data[limb_name]
+        return servos[limb_name]
     
     def get_all_limbs(self):
         """Get all configured limb names"""
         limbs = []
-        for key, value in self._data.items():
+        servos = self._data.get('servos', {})
+        for key, value in servos.items():
             if isinstance(value, dict) and 'motor_ids' in value:
                 limbs.append(key)
         return limbs
@@ -93,32 +111,59 @@ class Config:
         """Get system configuration value"""
         return self._data.get("system", {}).get(key)
     
+    def get_robot_config(self):
+        """Get robot configuration"""
+        return self._data.get('robot_config', {})
+    
     ##############################################################
     # Setters
     ##############################################################
 
-    def set_home_pos(self, motor_id: int, pos: float) -> None:
+    def set_home_pos(self, motor_id: int, pos: float, save: bool = False) -> None:
         """
         Set home position for a specific motor ID
         
         Args:
             motor_id: Motor ID (e.g., 0, 1, 12, 13, etc.)
             pos: float
+            save: bool - Change the yaml file or not
         """
-        for limb_name, limb_data in self._data.items():
+
+        print(f"Servo {motor_id} has home position set to {pos}")
+        servos = self._data.get('servos', {})
+
+        for limb_name, limb_data in servos.items():
             if not isinstance(limb_data, dict):
                 continue
         
-        if 'motor_ids' in limb_data and 'home_positions' in limb_data:
-            motor_ids = limb_data['motor_ids']
-            home_positions = limb_data['home_positions']
-        if motor_id in motor_ids:
-            index = motor_ids.index(motor_id)
-            home_positions[index] = pos
-            return  # done!
+            if 'motor_ids' in limb_data and 'home_positions' in limb_data:
+                motor_ids = limb_data['motor_ids']
+                home_positions = limb_data['home_positions']
+                if motor_id in motor_ids:
+                    index = motor_ids.index(motor_id)
+                    home_positions[index] = pos
+                    if save:
+                        self.save_config()
+                    return
 
         raise ValueError(f"Motor ID {motor_id} not found in configuration")
     
+    def save_config(self, path=None):
+        """
+        Save the current configuration back to the YAML file
+    
+        Args:
+            path: Optional path to save to. If None, uses the original config file path.
+        """
+        if path is None:
+            path = CONFIG_FILE
+    
+        with open(path, 'w') as f:
+            yaml.dump(self._data, f, default_flow_style=False, sort_keys=False, width=1000)
+    
+        print(f"Configuration saved to {path}")
+    
+
 
 if __name__ == "__main__":
     config = Config()

@@ -3,25 +3,87 @@ system:
   port: COM3
 common:
   timeout: 1000
-
 servos:
   right_arm:
-    motor_ids: [0, 1, 2, 3]
-    home_positions: [0, 0, 0, 0]
-    joint_names: ['shoulder', 'elbow', 'wrist', 'hand']
+    motor_ids:
+    - 0
+    - 1
+    - 2
+    - 3
+    home_positions:
+    - 1530
+    - 1530
+    - 1490
+    - 1420
+    joint_names:
+    - shoulder
+    - elbow
+    - wrist
+    - hand
   left_arm:
-    motor_ids: [12, 13, 14, 15]
-    home_positions: [0, 0, 0, 0]
-    joint_names: ['shoulder', 'elbow', 'wrist', 'hand']
+    motor_ids:
+    - 12
+    - 13
+    - 14
+    - 15
+    home_positions:
+    - 1450
+    - 1430
+    - 1480
+    - 1580
+    joint_names:
+    - shoulder
+    - elbow
+    - wrist
+    - hand
   right_leg:
-    motor_ids: [20, 21, 22, 23]
-    home_positions: [0, 0, 0, 0]
-    joint_names: ['hip', 'knee', 'ankle', 'foot']
+    motor_ids:
+    - 20
+    - 21
+    - 22
+    - 23
+    home_positions:
+    - 1500
+    - 1500
+    - 1500
+    - 1560
+    joint_names:
+    - hip
+    - knee
+    - ankle
+    - foot
   left_leg:
-    motor_ids: [24, 25, 26, 27]
-    home_positions: [0, 0, 0, 0]
-    joint_names: ['hip', 'knee', 'ankle', 'foot']
+    motor_ids:
+    - 24
+    - 25
+    - 26
+    - 27
+    home_positions:
+    - 1540
+    - 1370
+    - 1480
+    - 1500
+    joint_names:
+    - hip
+    - knee
+    - ankle
+    - foot
   torso:
-    motor_ids: [4, 5, 6, 7, 8]
-      home_positions: [0, 0, 0, 0, 0]
-    joint_names: ['waist', 'chest', 'neck', 'head_pan', 'head_tilt']
+    motor_ids:
+    - 4
+    - 5
+    - 6
+    - 7
+    - 8
+    home_positions:
+    - 1620
+    - 1580
+    - 1500
+    - 1500
+    - 1500
+    joint_names:
+    - waist
+    - chest
+    - neck
+    - head_pan
+    - head_tilt
