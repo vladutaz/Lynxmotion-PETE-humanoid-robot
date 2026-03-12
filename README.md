@@ -12,7 +12,9 @@ The first step for this project is building the robot using the parts provided a
 ##### Running the program
 The Lynxmotion hardware [SSC-32U](https://wiki.lynxmotion.com/info/wiki/lynxmotion/view/servo-erector-set-system/ses-electronics/ses-modules/ssc-32u/) servo controller is a dedicated RC servo controller with some big features. It has high resolution (1uS) for accurate positioning, and extremely smooth moves. The range is 0.50mS to 2.50mS for a range of about 180°. The board's baudrate can be changed manually by pressing a combination of buttons and as a servo controller it only acts as a translator between an inteligent board or an computer. All details about programming it and functions can be foun on their [user guide pdf](https://wiki.lynxmotion.com/info/wiki/lynxmotion/download/servo-erector-set-system/ses-electronics/ses-modules/ssc-32u/WebHome/lynxmotion_ssc-32u_usb_user_guide.pdf), the sequence of the commands has a simple rule `#<ch>P<position>T<time>`. It is recomended that the user doesn't try to initiate all the motors in a single secvence, the voltage may be to strong for the board to handle.
 ##### The missing head
+
 After following all the instruction the user may see that there is a missing piece in the components and also in the documentation. The head of the robot is missing, for this build to be completed it is required a creative mind; either design in CAD or Blender a head to 3d print or to mage an handmade head. This '_freedom of head_' is a good test for creativity, the user may even add additional sensors on his head, the SSC32U board can read sensor data.
+
 ---
 #### The program
 This build also has been run on a self-made python code. Using the [json](https://en.wikipedia.org/wiki/JSON) file for reading configuration the program can read multiple poses and also save them. Has an manual and automatic calibration and control, every function having a description in the code.
