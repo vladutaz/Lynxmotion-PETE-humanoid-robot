@@ -19,6 +19,31 @@ After following all the instruction the user may see that there is a missing pie
 #### The program
 This build also has been run on a self-made python code. Using the [json](https://en.wikipedia.org/wiki/JSON) file for reading configuration the program can read multiple poses and also save them. Has an manual and automatic calibration and control, every function having a description in the code.
 
+```json
+system:
+  baud_rate: 115200
+  port: COM3
+common:
+  timeout: 1000
+servos:
+  right_arm:
+    motor_ids:
+    - 0
+    - 1
+    - 2
+    - 3
+    home_positions:
+    - 1530
+    - 1530
+    - 1490
+    - 1420
+    joint_names:
+    - shoulder
+    - elbow
+    - wrist
+    - hand
+```
+
 Things to add:
 * an urdf file + simulation
 * an XBee bluetooth driver for easier control
