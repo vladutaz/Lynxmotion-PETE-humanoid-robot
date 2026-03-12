@@ -10,7 +10,6 @@ __all__ = ["Config"]
 
 CONFIG_FILE = os.path.join(os.path.dirname(__file__), '../Config/motor_config.yaml')
 
-
 class Config:
     _instance = None
     _lock = threading.Lock()
@@ -129,7 +128,7 @@ class Config:
             save: bool - Change the yaml file or not
         """
 
-        print(f"Servo {motor_id} has home position set to {pos}")
+        
         servos = self._data.get('servos', {})
 
         for limb_name, limb_data in servos.items():
@@ -143,6 +142,7 @@ class Config:
                     index = motor_ids.index(motor_id)
                     home_positions[index] = pos
                     if save:
+                        print(f"Servo {motor_id}({limb_name}) has home position set to {pos}")
                         self.save_config()
                     return
 

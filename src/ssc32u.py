@@ -4,9 +4,7 @@ import yaml
 
 from typing import Optional, List, Dict
 from dataclasses import dataclass
-from Config import CONFIG_FILE, Config
-
-#CONFIG_FILE = '../Config/motor_config.yaml'
+from Config import Config
 
 @dataclass
 class LimbConfig:
@@ -28,7 +26,7 @@ class SSC32U:
             baudrate: Communication speed (default: 9600)
             timeout: Serial timeout in seconds
         """
-        self.libs = self._parse_limbs()
+        self.limbs = self._parse_limbs()
         self.port = None
         self.baudrate = None
 
@@ -114,7 +112,7 @@ class SSC32U:
         """
         self.move_servo(channel, Config().get_system_conf("center_position"), time_ms)
     
-    def center_all_servos(self, num_servos=6, time_ms=2000):
+    def center_all_servos(self, time_ms=2000):
         """
         Center all servos
         
@@ -122,9 +120,11 @@ class SSC32U:
             num_servos: Number of servos to center (default: 6)
             time_ms: Movement time in milliseconds
         """
-        servo_positions = {i: 1500 for i in range(num_servos)}
-        print(f"Centering {num_servos} servos")
-        self.move_servos(servo_positions, time_ms)
+        for limb_name, limb_config in self.limbs.items():
+            home_position = limb_config.home_position
+            motor_ids = limb_config.motor_ids
+            self.move_servo(motor_ids, home_position, time_ms)
+            time.sleep(0.5) #Delay for the board so it doesn't overdrive
     
     def close(self):
         """
